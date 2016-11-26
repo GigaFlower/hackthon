@@ -47,7 +47,7 @@ function get_audio_name_by_speed(speed) {
         level = 'faster';
     }
 
-    var ind = Math.floor(Math.random() * 10);
+    var ind = 1 + Math.floor(Math.random() * 5);
     return level + '00' + ind + 'mp3';
 }
 

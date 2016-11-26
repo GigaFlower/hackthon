@@ -1,2 +1,4 @@
 .idea/
 hackthon/__pycache__/
+.pyc
+hackthon/static/music
