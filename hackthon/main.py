@@ -3,7 +3,8 @@
 
 from flask import Flask, request, render_template
 
-from .utility import emotion_api, wx_get_media, wx_put_media, photo_to_video
+from .utility import emotion_api, photo_to_video
+from .wx_utility import wx_get_media, wx_put_media
 from .wxreceive import parse_xml, Msg
 from .wxreply import VideoMsg
 
@@ -15,12 +16,12 @@ def hello_world():
     return "如果你看到了本页面\n,那说明你有网"
 
 
+# def wx_verify():
+#     echostr = request.args.get('echostr')
+#     return echostr
+#
+
 @app.route('/wx', methods=['GET'])
-def wx_verify():
-    echostr = request.args.get('echostr')
-    return echostr
-
-
 def wx_handle():
     try:
         data = request.data
@@ -33,11 +34,11 @@ def wx_handle():
             #     content = "test"
             #     return rTextMsg(toUser, fromUser, content).send()
             assert msg.MsgType == 'image'
-            mediaId = msg.MediaId
-            media = wx_get_media('', mediaId)
+            media_id = msg.MediaId
+            media = wx_get_media(media_id)
             video = photo_to_video(media)
-            video_id = wx_put_media('', video, media_type='voice')['media_id']
-            return VideoMsg(toUser, fromUser, mediaId).send()
+            video_id = wx_put_media(video, media_type='voice')['media_id']
+            return VideoMsg(toUser, fromUser, video_id).send()
             # else:
             #     print("Unknown msg type")
             #     return "success"
