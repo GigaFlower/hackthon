@@ -1,6 +1,8 @@
 # -*- coding:utf-8 -*-
 # Created by BigFlower at 16/11/26
 
+import hashlib
+
 from flask import Flask, request, render_template
 
 from .utility import emotion_api, photo_to_video
@@ -16,13 +18,25 @@ def hello_world():
     return "如果你看到了本页面\n,那说明你有网"
 
 
-# def wx_verify():
-#     echostr = request.args.get('echostr')
-#     return echostr
-#
-
-@app.route('/wx', methods=['GET'])
+@app.route('/wx', methods=['GET', 'POST'])
 def wx_handle():
+    if request.method == 'GET':
+        echostr = request.args.get('echostr')
+        signature = request.args.get('signature')
+        timestamp = request.args.get('timestamp')
+        nonce = request.args.get('nonce')
+        token = "zheshitoken"
+
+        l = [token, timestamp, nonce]
+        l.sort()
+        sha1 = hashlib.sha1()
+        map(sha1.update, l)
+        hashcode = sha1.hexdigest()
+        if hashcode == signature:
+            return echostr
+        else:
+            return ""
+
     try:
         data = request.data
         print("Handle Post webdata is ", data)
