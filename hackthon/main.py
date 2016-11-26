@@ -1,79 +1,32 @@
 # -*- coding:utf-8 -*-
 # Created by BigFlower at 16/11/26
 
-import hashlib
+import os
 
 from flask import Flask, request, render_template
 
-from .utility import emotion_api, photo_to_video
-from .wx_utility import wx_get_media, wx_put_media
-from .wxreceive import parse_xml, Msg
-from .wxreply import VideoMsg
+from .utility import photo_to_video
 
 app = Flask(__name__)
 
 
-@app.route('/', methods=['GET'])
-def hello_world():
-    return "如果你看到了本页面\n,那说明你有网"
-
-
-@app.route('/wx', methods=['GET', 'POST'])
-def wx_handle():
-    if request.method == 'GET':
-        echostr = request.args.get('echostr')
-        signature = request.args.get('signature')
-        timestamp = request.args.get('timestamp')
-        nonce = request.args.get('nonce')
-        token = "zheshitoken"
-
-        l = [token, timestamp, nonce]
-        l.sort()
-        sha1 = hashlib.sha1()
-        map(sha1.update, l)
-        hashcode = sha1.hexdigest()
-        if hashcode == signature:
-            return echostr
+@app.route('/', methods=['GET', 'POST'])
+def main():
+    if request.method == 'POST':
+        try:
+            photo = request.files['photo']
+        except KeyError:
+            return "'photo' file is required"
         else:
-            return ""
 
-    try:
-        data = request.data
-        print("Handle Post webdata is ", data)
-        msg = parse_xml(data)
-        if isinstance(msg, Msg):
-            toUser = msg.FromUserName
-            fromUser = msg.ToUserName
-            # if msg.MsgType == 'text':
-            #     content = "test"
-            #     return rTextMsg(toUser, fromUser, content).send()
-            assert msg.MsgType == 'image'
-            media_id = msg.MediaId
-            media = wx_get_media(media_id)
-            video = photo_to_video(media)
-            video_id = wx_put_media(video, media_type='voice')['media_id']
-            return VideoMsg(toUser, fromUser, video_id).send()
-            # else:
-            #     print("Unknown msg type")
-            #     return "success"
-        else:
-            print("暂且不处理")
-            return "success"
-    except Exception as e:
-        return e
+            photo.save(os.path.join('hackthon', 'static', 'photo','photo.jpg'))
+            video_file_name = photo_to_video(photo)
+
+            return render_template('index.html', photo='photo.jpg', music=video_file_name)
+    else:
+        return render_template('index.html', photo='', music='')
 
 
 @app.route('/test', methods=['GET'])
-def test():
-    return render_template('index.html')
-
-
-@app.route('/emotion', methods=['POST'])
-def emotion():
-    try:
-        photo = request.files['photo']
-    except KeyError:
-        return "'photo' file is required"
-    else:
-        emo = emotion_api(photo)
-        return emo, 200
+def hello_world():
+    return "如果你看到了本页面\n,那说明你有网"

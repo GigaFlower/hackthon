@@ -3,4 +3,3 @@
 
 
 from .main import app
-from .wx_utility import wx_get_access_token
