@@ -7,18 +7,9 @@
 
 <body>
 
-{% if photo %}
-<img src="/static/photo/{{ photo }}" width="300">
-{% endif %}
-
-{% if music %}
-<audio id="music" src="/static/music/{{ music }}" controls="controls" loop="false" autoplay="autoplay"></audio>
-{% endif %}
-
-
-<form method="post" enctype="multipart/form-data">
-    <input type="file" name="photo" id="photo" onchange="document.forms[0].submit()">
-</form>
-
 </body>
+<script src="/static/js/emotion.js"></script>
+<script>
+    add_audio_by_emotion({anger: 0.9, joy: 0.2, fear: 0.3});
+</script>
 </html>

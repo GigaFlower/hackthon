@@ -23,10 +23,15 @@ function add_audio_by_emotion(emotion_obj){
 function emotion_values_to_speed(emotion_obj) {
     var speed = 0.0, weights = 0.0;
     for (var emo in emotion_obj) {
-        speed += emotion_speed[emo] * emotion_obj[emo];
-        weights += emotion_speed[emo];
+        if(emotion_speed[emo]){
+            speed += emotion_speed[emo] * emotion_obj[emo];
+        }else{
+            console.log("Unknown emotion:" + emo);
+        }
+        weights += emotion_obj[emo];
     }
     speed /= weights;
+    console.log("speed: " + speed);
     return speed;
 }
 
@@ -39,23 +44,22 @@ function get_audio_name_by_speed(speed) {
         level = 'slower';
     } else if (speed <= 4) {
         level = 'slow';
-    } else if (speed <= 6) {
+    } else if (speed <= 5.5) {
         level = 'normal';
-    } else if (speed <= 8) {
+    } else if (speed <= 7.5) {
         level = 'fast';
     } else {
         level = 'faster';
     }
 
     var ind = 1 + Math.floor(Math.random() * 5);
-    return level + '00' + ind + 'mp3';
+    return level + '00' + ind + '.mp3';
 }
 
 function add_audio(file_name){
     var audio = document.createElement("audio");
     audio.setAttribute("src","/static/music/" + file_name);
-    audio.setAttribute("loop","false");
     audio.setAttribute("autoplay", "autoplay");
     audio.setAttribute("hidden", "hidden");
-    document.appendChild(audio);
+    document.body.appendChild(audio);
 }
