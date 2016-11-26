@@ -3,6 +3,4 @@
 
 from hackthon import app, wx_get_access_token
 
-# app.run('localhost', debug=True)
-
-wx_get_access_token()
+app.run('0.0.0.0', port=80,debug=True)
