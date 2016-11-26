@@ -17,7 +17,15 @@ function add_audio_by_emotion(emotion_obj){
     // emotion_obj is something like { <emotion_name>:<weight_float_between_0_1> ... }
     var spd = emotion_values_to_speed(emotion_obj);
     var fname = get_audio_name_by_speed(spd);
+    stop_all_audio();
     add_audio(fname);
+}
+
+function stop_all_audio(){
+    var audios = document.getElementsByTagName('audio');
+    for(var i=0;i<audios.length;++i){
+        audios[i].pause();
+    }
 }
 
 function emotion_values_to_speed(emotion_obj) {
