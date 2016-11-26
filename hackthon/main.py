@@ -13,6 +13,14 @@ def hello_world():
     return "如果你看到了本页面\n,那说明你有网"
 
 
+@app.route('/wx', methods=['GET'])
+def wx():
+    print(request.data)
+    print(request.args)
+    print(request.method)
+    return ''
+
+
 @app.route('/test', methods=['GET'])
 def test():
     return render_template('index.html')
