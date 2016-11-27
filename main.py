@@ -3,4 +3,4 @@
 
 from hackthon import app
 
-app.run('localhost', debug=True, threaded=True)
+app.run('0.0.0.0',port=80, debug=True, threaded=True)
